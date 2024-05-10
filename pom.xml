@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.jwz</groupId>
+    <artifactId>Springboot_blog</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>blog-framework</module>
+        <module>blog-application</module>
+        <module>blog-admin</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <spring-boot.version>2.6.11</spring-boot.version>
+        <mybatis-plus.version>3.5.2</mybatis-plus.version>
+        <mysql.version>8.0.19</mysql.version>
+        <aliyun-sdk-oss.version>3.10.2</aliyun-sdk-oss.version>
+        <fastjson.version>1.2.54</fastjson.version>
+        <jjwt.version>0.9.1</jjwt.version>
+        <easyexcel.version>3.0.5</easyexcel.version>
+        <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
+        <springfox-swagger-ui.version>2.9.2</springfox-swagger-ui.version>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <!--SpringBoot依赖配置 type:pom，通常导入是jar文件，这里直接导入相关pom依赖减少版本冲突
+            scope import provided runtime test system 还有这个作用范围主要用于<dependencyManagement>部分的依赖项。它表示该依赖项的作用范围将由导入的 POM 文件中的作用范围覆盖-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--fastjson-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
+            <!--jwt依赖,令牌-->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
+            <!--mybatis-plus依赖-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!--mysql数据库驱动-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+
+            <!--阿里云对象存储OSS  访问对象存储服务，一种云存储服务，允许用户在互联网上存储和管理数据。
+            使用 OSS，用户可以通过 HTTP 或 HTTPS 协议在任何时间和任何地点上传、下载和管理数据，适用于各种场景，如网站托管、图像和视频存储、数据备份等。
+            开发人员可以上传、下载、删除、复制、移动和管理对象（文件）等操作，同时还提供了安全认证、权限管理、日志记录等功能
+            -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun-sdk-oss.version}</version>
+            </dependency>
+
+            <!--excel工具-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
+
+            <!--springfox-swagger2 能够扫描 Spring 应用程序中的注解，例如@RestController和@ApiOperation，并生成对应的 Swagger 文档-->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${springfox-swagger2.version}</version>
+            </dependency>
+
+            <!--springfox-swagger-ui  提供了一个用户界面，用于展示生成的 Swagger 文档-->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${springfox-swagger-ui.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+            </plugin>
+            <!-- 此插件必须放在父 POM 中  -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <!--
+                    执行本插件的方法为，在主目录下执行如下命令：
+                    mvn package assembly:single
+                    对于 IntelliJ IDEA，生成的 JAR 包位于每个模块下的文件夹 target
+                    -->
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <!-- 此处 IntelliJ IDEA 可能会报红，这是正常现象  -->
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!-- 配置程序运行入口所在的类 -->
+                            <mainClass>com.jwz.BlogApplication</mainClass>
+                        </manifest>
+                        <manifest>
+                            <!-- 配置程序运行入口所在的类 -->
+                            <mainClass>com.jwz.BlogApplication</mainClass>
+                        </manifest>
+                    </archive>
+                    <!-- 设置 JAR 包输出目录 -->
+                    <outputDirectory>${project.build.directory}/#maven-assembly-plugin</outputDirectory>
+                    <!-- 设置打包后的 JAR 包的目录结构为默认 -->
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>
